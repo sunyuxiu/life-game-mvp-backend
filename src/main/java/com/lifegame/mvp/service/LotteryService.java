@@ -14,9 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class LotteryService {
     private final CouponCodeMapper couponCodeMapper;
     private final LotteryRecordMapper lotteryRecordMapper;
     private final PointsService pointsService;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     @Transactional
     public LotteryResponse draw(Long userId, LotteryRequest request) {

@@ -1,6 +1,8 @@
 package com.lifegame.mvp.interceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lifegame.mvp.common.JwtUtil;
+import com.lifegame.mvp.common.Result;
 import com.lifegame.mvp.common.UserContext;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,13 +20,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class JwtInterceptor implements HandlerInterceptor {
 
     private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(401);
-            response.getWriter().write("{\"code\":401,\"message\":\"未授权\",\"data\":null}");
+            writeErrorResponse(response, 401, "未授权");
             return false;
         }
         String token = authHeader.substring(7);
@@ -40,10 +43,16 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         } catch (JwtException e) {
             log.warn("Invalid JWT: {}", e.getMessage());
-            response.setStatus(401);
-            response.getWriter().write("{\"code\":401,\"message\":\"Token无效或已过期\",\"data\":null}");
+            writeErrorResponse(response, 401, "Token无效或已过期");
             return false;
         }
+    }
+
+    private void writeErrorResponse(HttpServletResponse response, int status, String message) throws Exception {
+        response.setStatus(status);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(Result.fail(status, message)));
     }
 
     @Override
