@@ -50,7 +50,7 @@ public class TierService {
         } else if (!allTiers.isEmpty()) {
             Tier firstTier = allTiers.get(0);
             response.setNextTier(firstTier.getName());
-            response.setPointsNeeded(firstTier.getMinPoints() - weekPoints);
+            response.setPointsNeeded(firstTier.getMinPoints() - Math.max(0, weekPoints));
         }
         return response;
     }

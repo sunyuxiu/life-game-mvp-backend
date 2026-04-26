@@ -117,8 +117,7 @@ curl -X POST http://localhost:8080/api/auth/login \
   "message": "success",
   "data": {
     "token": "eyJhbGciOiJIUzI1NiJ9...",
-    "userId": 1,
-    "openid": "openid_test_code_001"
+    "userId": 1
   }
 }
 ```

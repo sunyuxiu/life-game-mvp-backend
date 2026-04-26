@@ -7,7 +7,7 @@
         SELECT #{weekId}, user_id, SUM(delta)
         FROM points_ledger
         WHERE delta > 0
-          AND YEARWEEK(created_at, 1) = YEARWEEK(NOW(), 1)
+          AND YEARWEEK(created_at, 1) = #{weekId}
         GROUP BY user_id
         ON DUPLICATE KEY UPDATE week_points = VALUES(week_points)
     </insert>
