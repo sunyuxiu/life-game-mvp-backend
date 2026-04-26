@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import org.springframework.dao.DuplicateKeyException;
+
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -164,7 +166,7 @@ public class RankService {
             snapshot.setTierName(tier != null ? tier.getName() : null);
             try {
                 rankWeekSnapshotMapper.insert(snapshot);
-            } catch (Exception e) {
+            } catch (DuplicateKeyException e) {
                 log.warn("Snapshot already exists for weekId={}, userId={}", lastWeekId, rwu.getUserId());
             }
         }

@@ -26,7 +26,7 @@ public class AuthService {
         if (user == null) {
             user = new User();
             user.setOpenid(openid);
-            user.setNickname("用户" + openid.substring(openid.length() - 6));
+            user.setNickname("用户" + (openid.length() >= 6 ? openid.substring(openid.length() - 6) : openid));
             user.setPoints(0);
             user.setLotteryTimes(0);
             user.setCreatedAt(LocalDateTime.now());

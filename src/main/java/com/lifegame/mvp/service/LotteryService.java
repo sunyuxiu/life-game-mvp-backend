@@ -41,17 +41,19 @@ public class LotteryService {
             throw new RuntimeException("暂无奖品");
         }
         LotteryPrize prize = weightedRandom(prizes);
+        // Use local variables to avoid mutating the shared prize entity
+        String effectivePrizeType = prize.getType();
         CouponCode couponCode = null;
-        if ("COUPON".equals(prize.getType())) {
+        if ("COUPON".equals(effectivePrizeType)) {
             if (prize.getStock() > 0) {
                 int stockAffected = lotteryPrizeMapper.decrementStock(prize.getId());
                 if (stockAffected == 0) {
-                    prize.setType("NONE");
+                    effectivePrizeType = "NONE";
                 } else {
                     couponCode = issueCoupon(prize.getId(), userId);
                 }
             }
-        } else if ("POINTS".equals(prize.getType())) {
+        } else if ("POINTS".equals(effectivePrizeType)) {
             pointsService.addPoints(userId, prize.getPointsValue(), 0, "LOTTERY", null);
         }
         LotteryRecord record = new LotteryRecord();
@@ -63,7 +65,7 @@ public class LotteryService {
         lotteryRecordMapper.insert(record);
         LotteryResponse response = new LotteryResponse();
         response.setPrizeName(prize.getName());
-        response.setPrizeType(prize.getType());
+        response.setPrizeType(effectivePrizeType);
         response.setPointsValue(prize.getPointsValue());
         response.setCouponCode(couponCode != null ? couponCode.getCode() : null);
         return response;
