@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lifegame.mvp.mapper.RankWeekSnapshotMapper">
+
+    <select id="getTopN" resultType="com.lifegame.mvp.entity.RankWeekSnapshot">
+        SELECT * FROM rank_week_snapshot
+        WHERE week_id = #{weekId}
+        ORDER BY rank_num ASC
+        LIMIT #{topN}
+    </select>
+
+</mapper>
